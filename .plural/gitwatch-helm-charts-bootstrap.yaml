@@ -1,0 +1,14 @@
+apiVersion: apps.plural.sh/v1alpha1
+kind: GitWatch
+metadata:
+  name: helm-charts-bootstrap-apps
+  namespace: plural-system
+spec:
+  gitRepository:
+    name: helm-charts
+    namespace: plural-system
+  path: bootstrap/apps
+  branch: main
+  cluster:
+    handle: k8calab2
+  syncInterval: 1m
