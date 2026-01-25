@@ -1,0 +1,17 @@
+apiVersion: deployments.plural.sh/v1alpha1
+kind: ServiceDeployment
+metadata:
+  name: game-2048
+spec:
+  namespace: game-2048
+  cluster: k8calab2
+  git:
+    ref: main
+    folder: charts/game-2048
+  repositoryRef:
+    kind: GitRepository
+    name: helm-charts
+    namespace: infra
+  helm:
+    values:
+      replicaCount: 1
