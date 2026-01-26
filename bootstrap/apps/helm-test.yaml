@@ -1,0 +1,21 @@
+apiVersion: deployments.plural.sh/v1alpha1
+kind: ServiceDeployment
+metadata:
+  name: nginx
+  namespace: infra
+spec:
+  namespace: ingress-nginx
+  name: ingress-nginx
+  cluster: k3s
+  helm:
+    version: 4.4.x
+    chart: ingress-nginx
+    url: https://kubernetes.github.io/ingress-nginx
+    values:
+      # in-line helm values, will be stored encrypted at rest
+      controller:
+        image:
+          digest: null
+          digestChroot: null
+        admissionWebhooks:
+          enabled: false
