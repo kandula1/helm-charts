@@ -6,7 +6,7 @@ metadata:
 spec:
   namespace: ingress-nginx
   name: ingress-nginx
-  cluster: k3s
+  cluster: k8calab2
   helm:
     version: 4.4.x
     chart: ingress-nginx
