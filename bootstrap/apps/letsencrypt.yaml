@@ -9,3 +9,9 @@ spec:
     url: https://github.com/kandula1/helm-charts.git
     ref: main
     folder: charts/letsencrypt
+  helm:
+    values:
+      registration:
+        emailAddress: "kiran.kandula@yahoo.com"
+      ingress:
+        className: "nginx"
