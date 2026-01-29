@@ -1,0 +1,17 @@
+apiVersion: deployments.plural.sh/v1alpha1
+kind: ServiceDeployment
+metadata:
+  name: letsencrypt 
+spec:
+  namespace: encrypt 
+  cluster: k8calab2
+  git:
+    ref: main
+    folder: charts/letsencrypt
+  repositoryRef:
+    kind: GitRepository
+    name: helm-charts
+    namespace: infra
+  helm:
+    values:
+      replicaCount: 1
