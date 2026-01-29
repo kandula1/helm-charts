@@ -13,3 +13,5 @@ spec:
       ingress:
         enabled: true
         className: "nginx"
+        tls:
+          enabled: false
