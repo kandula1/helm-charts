@@ -9,3 +9,7 @@ spec:
     url: https://github.com/kandula1/helm-charts.git
     ref: main
     folder: charts/hobbyfarm
+  helm:
+    values:
+      hobbyfarm: {}
+
