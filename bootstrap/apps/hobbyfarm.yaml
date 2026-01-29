@@ -5,11 +5,11 @@ metadata:
 spec:
   namespace: hobbyfarm
   cluster: k8calab2
-  git:
-    url: https://github.com/kandula1/helm-charts.git
-    ref: main
-    folder: charts/hobbyfarm
   helm:
+    version: 2.0.8
+    chart: hobbyfarm
+    url: https://hobbyfarm.github.io/hobbyfarm
     values:
-      hobbyfarm: {}
-
+      ingress:
+        enabled: true
+        className: "nginx"
