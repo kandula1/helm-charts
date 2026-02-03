@@ -13,3 +13,8 @@ spec:
       controller:
         admissionWebhooks:
           enabled: false
+        service:
+          type: NodePort          # Changed from LoadBalancer
+          nodePorts:
+            http: 30080           # Access on any node:30080
+            https: 30443          # Access on any node:30443
