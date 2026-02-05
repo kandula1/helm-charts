@@ -1,0 +1,11 @@
+apiVersion: deployments.plural.sh/v1alpha1
+kind: ServiceDeployment
+metadata:
+  name: k8s-demo-configmap
+spec:
+  namespace: demo-configmap
+  cluster: k8calab2
+  git:
+    url: https://github.com/kandula1/helm-charts.git
+    ref: main
+    folder: charts/k8s-demo-configmap
