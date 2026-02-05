@@ -1,0 +1,32 @@
+namespaces:
+  - name: demo-dev
+    labels:
+      environment: development
+      team: platform
+  - name: demo-staging
+    labels:
+      environment: staging
+      team: platform
+  - name: demo-prod
+    labels:
+      environment: production
+      team: platform
+
+resourceQuota:
+  enabled: true
+  requests:
+    cpu: "2"
+    memory: 4Gi
+  limits:
+    cpu: "4"
+    memory: 8Gi
+  pods: "20"
+
+limitRange:
+  enabled: true
+  defaultRequest:
+    cpu: 100m
+    memory: 128Mi
+  defaultLimit:
+    cpu: 500m
+    memory: 512Mi

@@ -1,0 +1,31 @@
+storageClass:
+  create: true
+  name: local-storage
+  provisioner: kubernetes.io/no-provisioner
+  reclaimPolicy: Delete
+  volumeBindingMode: WaitForFirstConsumer
+
+persistentVolume:
+  create: true
+  name: demo-local-pv
+  capacity: 1Gi
+  # Path on the worker node - must exist
+  hostPath: /tmp/demo-pv-data
+  # Schedule PV on worker node
+  nodeHostname: dv1medk8lab2no01
+
+persistentVolumeClaim:
+  name: demo-data-pvc
+  accessMode: ReadWriteOnce
+  storage: 1Gi
+
+writerApp:
+  enabled: true
+  image: busybox
+  tag: "1.36"
+  schedule: "*/2 * * * *"
+
+readerApp:
+  enabled: true
+  image: nginx
+  tag: "1.25"

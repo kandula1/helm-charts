@@ -1,0 +1,17 @@
+{{- if .Values.resourceQuota.enabled }}
+{{- range .Values.namespaces }}
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: {{ .name }}-quota
+  namespace: {{ .name }}
+spec:
+  hard:
+    requests.cpu: {{ $.Values.resourceQuota.requests.cpu | quote }}
+    requests.memory: {{ $.Values.resourceQuota.requests.memory | quote }}
+    limits.cpu: {{ $.Values.resourceQuota.limits.cpu | quote }}
+    limits.memory: {{ $.Values.resourceQuota.limits.memory | quote }}
+    pods: {{ $.Values.resourceQuota.pods | quote }}
+{{- end }}
+{{- end }}

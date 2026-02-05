@@ -1,0 +1,33 @@
+{{- if .Values.demoJob.enabled }}
+# Demo Job: Uses the ServiceAccount to query the cluster
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Release.Name }}-rbac-demo
+spec:
+  backoffLimit: 1
+  template:
+    spec:
+      restartPolicy: Never
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+      containers:
+        - name: rbac-test
+          image: {{ .Values.demoJob.image }}:{{ .Values.demoJob.tag }}
+          command:
+            - /bin/sh
+            - -c
+            - |
+              echo "===== RBAC Demo ====="
+              echo "Running as ServiceAccount: {{ .Values.serviceAccount.name }}"
+              echo ""
+              echo "--- Listing pods (allowed by Role) ---"
+              kubectl get pods
+              echo ""
+              echo "--- Listing nodes (allowed by ClusterRole) ---"
+              kubectl get nodes
+              echo ""
+              echo "--- Trying to delete pods (should FAIL - not in verbs) ---"
+              kubectl delete pod nonexistent 2>&1 || true
+              echo ""
+              echo "===== RBAC Demo Complete ====="
+{{- end }}

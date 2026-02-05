@@ -1,0 +1,20 @@
+healthChecker:
+  schedule: "*/5 * * * *"
+  image: curlimages/curl
+  tag: "8.5.0"
+  endpoints:
+    - name: kubernetes-api
+      url: "https://kubernetes.default.svc/healthz"
+    - name: kube-dns
+      url: "http://kube-dns.kube-system.svc:9153/metrics"
+
+logRotator:
+  enabled: true
+  schedule: "0 */6 * * *"
+  image: busybox
+  tag: "1.36"
+  retentionDays: 7
+
+backoffLimit: 2
+successfulJobsHistoryLimit: 5
+failedJobsHistoryLimit: 3

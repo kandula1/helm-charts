@@ -1,0 +1,4 @@
+apiVersion: v2
+name: k8s-demo-namespace
+description: Demo - Create namespaces with labels and resource quotas
+version: 1.0.0

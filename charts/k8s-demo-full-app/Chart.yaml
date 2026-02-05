@@ -1,0 +1,4 @@
+apiVersion: v2
+name: k8s-demo-full-app
+description: Demo - Complete application with Deployment, Service, Ingress, ConfigMap, Secret, HPA, PDB, and NetworkPolicy
+version: 1.0.0
