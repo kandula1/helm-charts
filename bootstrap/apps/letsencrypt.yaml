@@ -1,0 +1,17 @@
+apiVersion: deployments.plural.sh/v1alpha1
+kind: ServiceDeployment
+metadata:
+  name: letsencrypt
+spec:
+  namespace: letsencrypt
+  cluster: k8calab2
+  git:
+    url: https://github.com/kandula1/helm-charts.git
+    ref: main
+    folder: charts/letsencrypt
+  helm:
+    values:
+      registration:
+        emailAddress: "kiran.kandula@yahoo.com"
+      ingress:
+        className: "nginx"

@@ -1,0 +1,20 @@
+apiVersion: deployments.plural.sh/v1alpha1
+kind: ServiceDeployment
+metadata:
+  name: nginx
+spec:
+  namespace: ingress-nginx
+  cluster: k8calab2
+  helm:
+    version: 4.9.x
+    chart: ingress-nginx
+    url: https://kubernetes.github.io/ingress-nginx
+    values:
+      controller:
+        admissionWebhooks:
+          enabled: false
+        service:
+          type: NodePort          # Changed from LoadBalancer
+          nodePorts:
+            http: 30080           # Access on any node:30080
+            https: 30443          # Access on any node:30443
