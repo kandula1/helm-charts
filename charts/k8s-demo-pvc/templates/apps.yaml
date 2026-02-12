@@ -1,0 +1,76 @@
+{{- if .Values.writerApp.enabled }}
+# CronJob that writes timestamp to PVC every 2 minutes
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ .Release.Name }}-writer
+spec:
+  schedule: {{ .Values.writerApp.schedule | quote }}
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: writer
+              image: {{ .Values.writerApp.image }}:{{ .Values.writerApp.tag }}
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  echo "[$(date)] Pod: $HOSTNAME - Hello from PVC writer!" >> /data/log.txt
+                  echo "--- Current log contents ---"
+                  cat /data/log.txt
+                  echo "--- File count: $(wc -l < /data/log.txt) entries ---"
+              volumeMounts:
+                - name: data
+                  mountPath: /data
+          volumes:
+            - name: data
+              persistentVolumeClaim:
+                claimName: {{ .Values.persistentVolumeClaim.name }}
+{{- end }}
+---
+{{- if .Values.readerApp.enabled }}
+# Nginx deployment that serves the PVC data
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-reader
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-pvc-reader
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-pvc-reader
+    spec:
+      containers:
+        - name: nginx
+          image: {{ .Values.readerApp.image }}:{{ .Values.readerApp.tag }}
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: data
+              mountPath: /usr/share/nginx/html/data
+              readOnly: true
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistentVolumeClaim.name }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-pvc-reader
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    app: {{ .Release.Name }}-pvc-reader
+{{- end }}

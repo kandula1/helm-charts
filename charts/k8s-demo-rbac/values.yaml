@@ -1,0 +1,27 @@
+serviceAccount:
+  name: demo-app-sa
+
+# Namespace-scoped role
+role:
+  name: demo-pod-reader
+  rules:
+    - apiGroups: [""]
+      resources: ["pods", "services", "configmaps"]
+      verbs: ["get", "list", "watch"]
+    - apiGroups: ["apps"]
+      resources: ["deployments"]
+      verbs: ["get", "list", "watch"]
+
+# Cluster-scoped role
+clusterRole:
+  create: true
+  name: demo-node-reader
+  rules:
+    - apiGroups: [""]
+      resources: ["nodes", "namespaces"]
+      verbs: ["get", "list", "watch"]
+
+demoJob:
+  enabled: true
+  image: bitnami/kubectl
+  tag: "1.33"

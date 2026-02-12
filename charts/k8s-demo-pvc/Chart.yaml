@@ -1,0 +1,4 @@
+apiVersion: v2
+name: k8s-demo-pvc
+description: Demo - PersistentVolumeClaim with local storage, StorageClass, and a pod that writes to persistent storage
+version: 1.0.0

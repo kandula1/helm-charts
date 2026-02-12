@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-nginx
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-configmap-demo
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-configmap-demo
+    spec:
+      containers:
+        - name: nginx
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          ports:
+            - containerPort: 80
+          # Method 1: ConfigMap as environment variables
+          envFrom:
+            - configMapRef:
+                name: {{ .Release.Name }}-app-config
+          volumeMounts:
+            # Method 2: ConfigMap as file (nginx config)
+            - name: nginx-config
+              mountPath: /etc/nginx/conf.d/
+            # Method 3: ConfigMap as file (html content)
+            - name: html-content
+              mountPath: /usr/share/nginx/html/
+            # Mount app-config as files too (for /config endpoint)
+            - name: app-config-files
+              mountPath: /etc/app-config/
+      volumes:
+        - name: nginx-config
+          configMap:
+            name: {{ .Release.Name }}-nginx-config
+        - name: html-content
+          configMap:
+            name: {{ .Release.Name }}-html
+        - name: app-config-files
+          configMap:
+            name: {{ .Release.Name }}-app-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-configmap-demo
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    app: {{ .Release.Name }}-configmap-demo

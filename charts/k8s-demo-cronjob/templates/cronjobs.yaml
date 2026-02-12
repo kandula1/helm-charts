@@ -1,0 +1,67 @@
+# CronJob 1: Health Checker - pings endpoints every 5 min
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ .Release.Name }}-health-checker
+spec:
+  schedule: {{ .Values.healthChecker.schedule | quote }}
+  successfulJobsHistoryLimit: {{ .Values.successfulJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ .Values.failedJobsHistoryLimit }}
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      backoffLimit: {{ .Values.backoffLimit }}
+      activeDeadlineSeconds: 120
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: health-checker
+              image: {{ .Values.healthChecker.image }}:{{ .Values.healthChecker.tag }}
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  echo "[$(date)] ===== Health Check Report ====="
+                  {{- range .Values.healthChecker.endpoints }}
+                  echo ""
+                  echo "Checking: {{ .name }} ({{ .url }})"
+                  STATUS=$(curl -sk -o /dev/null -w "%{http_code}" {{ .url }} 2>/dev/null || echo "FAILED")
+                  if [ "$STATUS" = "200" ] || [ "$STATUS" = "000" ]; then
+                    echo "  Result: OK (HTTP $STATUS)"
+                  else
+                    echo "  Result: WARNING (HTTP $STATUS)"
+                  fi
+                  {{- end }}
+                  echo ""
+                  echo "===== Check Complete ====="
+{{- if .Values.logRotator.enabled }}
+# CronJob 2: Log Rotator - cleans up old data every 6 hours
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ .Release.Name }}-log-rotator
+spec:
+  schedule: {{ .Values.logRotator.schedule | quote }}
+  successfulJobsHistoryLimit: 2
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: log-rotator
+              image: {{ .Values.logRotator.image }}:{{ .Values.logRotator.tag }}
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  echo "[$(date)] Log rotation started"
+                  echo "Retention policy: {{ .Values.logRotator.retentionDays }} days"
+                  echo "Finding files older than {{ .Values.logRotator.retentionDays }} days in /tmp..."
+                  find /tmp -type f -mtime +{{ .Values.logRotator.retentionDays }} 2>/dev/null | head -20 || echo "No old files found"
+                  echo "[$(date)] Log rotation complete"
+{{- end }}

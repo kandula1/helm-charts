@@ -1,0 +1,45 @@
+appConfig:
+  APP_ENV: production
+  APP_DEBUG: "false"
+  LOG_LEVEL: info
+  MAX_CONNECTIONS: "100"
+  CACHE_TTL: "3600"
+
+nginxConfig: |
+  server {
+      listen 80;
+      server_name _;
+
+      location / {
+          root /usr/share/nginx/html;
+          index index.html;
+      }
+
+      location /health {
+          return 200 'OK';
+          add_header Content-Type text/plain;
+      }
+
+      location /config {
+          alias /etc/app-config/;
+          autoindex on;
+      }
+  }
+
+htmlContent: |
+  <!DOCTYPE html>
+  <html>
+  <head><title>ConfigMap Demo</title></head>
+  <body>
+    <h1>ConfigMap Demo - Plural GitOps</h1>
+    <p>This page is served from a ConfigMap mounted as a volume.</p>
+    <p>Visit <a href="/health">/health</a> for health check.</p>
+    <p>Visit <a href="/config">/config</a> to see mounted config files.</p>
+  </body>
+  </html>
+
+image:
+  repository: nginx
+  tag: "1.25"
+
+replicas: 1

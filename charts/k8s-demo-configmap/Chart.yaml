@@ -1,0 +1,4 @@
+apiVersion: v2
+name: k8s-demo-configmap
+description: Demo - ConfigMaps with app config and nginx config, mounted into pods
+version: 1.0.0

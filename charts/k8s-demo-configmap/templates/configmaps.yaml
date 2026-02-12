@@ -1,0 +1,30 @@
+# ConfigMap 1: Application environment variables
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-app-config
+data:
+  {{- range $key, $value := .Values.appConfig }}
+  {{ $key }}: {{ $value | quote }}
+  {{- end }}
+
+# ConfigMap 2: Nginx configuration file
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-nginx-config
+data:
+  default.conf: |
+    {{- .Values.nginxConfig | nindent 4 }}
+
+# ConfigMap 3: HTML content
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-html
+data:
+  index.html: |
+    {{- .Values.htmlContent | nindent 4 }}
