@@ -1,0 +1,13 @@
+apiVersion: deployments.plural.sh/v1alpha1
+kind: ServiceDeployment
+metadata:
+  name: k8s-demo-multi-namespace
+spec:
+  namespace: demo-system
+  cluster: k8calab2
+  syncConfig:
+    deleteNamespace: true
+  git:
+    url: https://github.com/kandula1/helm-charts.git
+    ref: main
+    folder: charts/k8s-demo-multi-namespace

@@ -1,0 +1,18 @@
+apiVersion: deployments.plural.sh/v1alpha1
+kind: GlobalService
+metadata:
+  name: k8s-demo-single-namespace
+  namespace: infra
+spec:
+  template:
+    name: k8s-demo-single-namespace
+    namespace: platform-system
+    git:
+      folder: services/k8s-demo-single-namespace
+      ref: main
+    repositoryRef:
+      kind: GitRepository
+      name: infra
+      namespace: infra
+    syncConfig:
+      deleteNamespace: true
