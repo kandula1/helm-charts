@@ -8,7 +8,7 @@ spec:
     name: k8s-demo-single-namespace
     namespace: platform-system
     git:
-      folder: services/k8s-demo-single-namespace
+      folder: charts/k8s-demo-single-namespace
       ref: main
     repositoryRef:
       kind: GitRepository
