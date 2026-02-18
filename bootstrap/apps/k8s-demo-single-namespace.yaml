@@ -6,7 +6,7 @@ metadata:
 spec:
   template:
     name: k8s-demo-single-namespace
-    namespace: default #default — deploys the service into an existing namespace
+    namespace: fleet-demo #default — deploys the service into an existing namespace
     git:
       url: https://github.com/kandula1/helm-charts.git
       ref: main
