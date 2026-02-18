@@ -8,11 +8,8 @@ spec:
     name: k8s-demo-single-namespace
     namespace: default #default — deploys the service into an existing namespace
     git:
-      folder: charts/k8s-demo-single-namespace
+      url: https://github.com/kandula1/helm-charts.git
       ref: main
-    repositoryRef:
-      kind: GitRepository
-      name: infra
-      namespace: infra
+      folder: charts/k8s-demo-single-namespace
     syncConfig:
       deleteNamespace: false # don't delete default ns if the service is removed.
