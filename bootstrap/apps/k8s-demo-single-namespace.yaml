@@ -6,7 +6,7 @@ metadata:
 spec:
   template:
     name: k8s-demo-single-namespace
-    namespace: platform-system
+    namespace: default #default — deploys the service into an existing namespace
     git:
       folder: charts/k8s-demo-single-namespace
       ref: main
@@ -15,4 +15,4 @@ spec:
       name: infra
       namespace: infra
     syncConfig:
-      deleteNamespace: true
+      deleteNamespace: false # don't delete default ns if the service is removed.
