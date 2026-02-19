@@ -1,0 +1,15 @@
+apiVersion: deployments.plural.sh/v1alpha1
+kind: GlobalService
+metadata:
+  name: k8s-demo-single-namespace
+  namespace: infra
+spec:
+  template:
+    name: k8s-demo-single-namespace
+    namespace: default #default — deploys the service into an existing namespace
+    git:
+      url: https://github.com/kandula1/helm-charts.git
+      ref: main
+      folder: charts/k8s-demo-single-namespace
+    syncConfig:
+      deleteNamespace: false # don't delete default ns if the service is removed.
