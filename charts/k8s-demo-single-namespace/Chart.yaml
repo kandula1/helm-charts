@@ -1,0 +1,4 @@
+apiVersion: v2
+name: k8s-demo-single-namespace
+description: Single namespace with configurable resource quotas and limit ranges
+version: 1.0.0

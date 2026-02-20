@@ -1,3 +1,8 @@
+# =============================================================================
+# Single Namespace - GlobalService
+# ALL configuration is here. To change quotas, edit this file.
+# Chart at charts/k8s-demo-single-namespace is just a generic template.
+# =============================================================================
 apiVersion: deployments.plural.sh/v1alpha1
 kind: GlobalService
 metadata:
@@ -6,10 +11,42 @@ metadata:
 spec:
   template:
     name: k8s-demo-single-namespace
-    namespace: fleet-test #default — deploys the service into an existing namespace
-    git:
+    namespace: default
+    helm:
       url: https://github.com/kandula1/helm-charts.git
+      chart: charts/k8s-demo-single-namespace
       ref: main
-      folder: charts/k8s-demo-single-namespace
+      values:
+        namespace:
+          name: platform-system
+          labels:
+            environment: shared
+            team: platform
+        resourceQuota:
+          enabled: true
+          requests:
+            cpu: "4"
+            memory: 8Gi
+          limits:
+            cpu: "8"
+            memory: 16Gi
+          pods: "30"
+        limitRange:
+          enabled: true
+          defaultRequest:
+            cpu: 100m
+            memory: 128Mi
+          defaultLimit:
+            cpu: 500m
+            memory: 512Mi
+        demoPod:
+          enabled: true
+          replicas: 1
+          image: nginx:1.27-alpine
+          resources:
+            requestCpu: 50m
+            requestMemory: 64Mi
+            limitCpu: 200m
+            limitMemory: 256Mi
     syncConfig:
-      deleteNamespace: true # don't delete default ns if the service is removed.
+      deleteNamespace: false

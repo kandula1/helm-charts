@@ -1,0 +1,32 @@
+{{- if .Values.demoPod.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.namespace.name }}-demo-app
+  namespace: {{ .Values.namespace.name }}
+  labels:
+    app: demo-app
+    managed-by: plural-gitops
+spec:
+  replicas: {{ .Values.demoPod.replicas }}
+  selector:
+    matchLabels:
+      app: demo-app
+  template:
+    metadata:
+      labels:
+        app: demo-app
+    spec:
+      containers:
+        - name: demo
+          image: {{ .Values.demoPod.image }}
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: {{ .Values.demoPod.resources.requestCpu }}
+              memory: {{ .Values.demoPod.resources.requestMemory }}
+            limits:
+              cpu: {{ .Values.demoPod.resources.limitCpu }}
+              memory: {{ .Values.demoPod.resources.limitMemory }}
+{{- end }}

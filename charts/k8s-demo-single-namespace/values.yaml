@@ -1,0 +1,33 @@
+# Defaults - override these via GlobalService/ServiceDeployment helm.values
+namespace:
+  name: default-ns
+  labels: {}
+
+resourceQuota:
+  enabled: false
+  requests:
+    cpu: "1"
+    memory: 2Gi
+  limits:
+    cpu: "2"
+    memory: 4Gi
+  pods: "10"
+
+limitRange:
+  enabled: false
+  defaultRequest:
+    cpu: 100m
+    memory: 128Mi
+  defaultLimit:
+    cpu: 500m
+    memory: 512Mi
+
+demoPod:
+  enabled: false
+  replicas: 1
+  image: nginx:1.27-alpine
+  resources:
+    requestCpu: 50m
+    requestMemory: 64Mi
+    limitCpu: 200m
+    limitMemory: 256Mi
