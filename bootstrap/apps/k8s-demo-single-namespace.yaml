@@ -14,7 +14,7 @@ spec:
     helm:
       values:
         namespace:
-          name: platform-system
+          name: platform-system1
           labels:
             environment: shared
             team: platform
