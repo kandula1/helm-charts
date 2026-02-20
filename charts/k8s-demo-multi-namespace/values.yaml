@@ -23,6 +23,15 @@ defaults:
     defaultLimit:
       cpu: 500m
       memory: 512Mi
+  demoPod:
+    enabled: true
+    replicas: 1
+    image: nginx:1.27-alpine
+    resources:
+      requestCpu: 50m
+      requestMemory: 64Mi
+      limitCpu: 200m
+      limitMemory: 256Mi
 
 # -- Namespace definitions
 # Add/remove namespaces as needed. Each namespace can override defaults.
@@ -33,7 +42,6 @@ namespaces:
       team: platform
     # Uses global defaults (no overrides)
 
-#-------------------------------
   - name: demo-staging
     labels:
       environment: staging
@@ -48,7 +56,6 @@ namespaces:
         memory: 16Gi
       pods: "40"
 
-#-------------------------------
   - name: demo-prod
     labels:
       environment: production

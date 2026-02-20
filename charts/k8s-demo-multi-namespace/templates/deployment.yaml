@@ -1,0 +1,40 @@
+{{- range .Values.namespaces }}
+{{- if (.demoPod).enabled | default $.Values.defaults.demoPod.enabled }}
+{{- $pod := $.Values.defaults.demoPod }}
+{{- $nsPod := .demoPod | default dict }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .name }}-demo-app
+  namespace: {{ .name }}
+  labels:
+    app: demo-app
+    namespace: {{ .name }}
+    managed-by: plural-gitops
+spec:
+  replicas: {{ $nsPod.replicas | default $pod.replicas }}
+  selector:
+    matchLabels:
+      app: demo-app
+      namespace: {{ .name }}
+  template:
+    metadata:
+      labels:
+        app: demo-app
+        namespace: {{ .name }}
+    spec:
+      containers:
+        - name: demo
+          image: {{ $nsPod.image | default $pod.image }}
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: {{ ($nsPod.resources).requestCpu | default $pod.resources.requestCpu }}
+              memory: {{ ($nsPod.resources).requestMemory | default $pod.resources.requestMemory }}
+            limits:
+              cpu: {{ ($nsPod.resources).limitCpu | default $pod.resources.limitCpu }}
+              memory: {{ ($nsPod.resources).limitMemory | default $pod.resources.limitMemory }}
+{{- end }}
+{{- end }}
