@@ -1,32 +1,71 @@
+# =============================================================================
+# Dynamic Namespace Configuration
+# Each namespace can have its own resource quotas and limit ranges.
+# If not specified per-namespace, the global defaults below are used.
+# =============================================================================
+
+# -- Global defaults (applied when a namespace doesn't specify its own quotas)
+defaults:
+  resourceQuota:
+    enabled: true
+    requests:
+      cpu: "2"
+      memory: 4Gi
+    limits:
+      cpu: "4"
+      memory: 8Gi
+    pods: "20"
+  limitRange:
+    enabled: true
+    defaultRequest:
+      cpu: 100m
+      memory: 128Mi
+    defaultLimit:
+      cpu: 500m
+      memory: 512Mi
+
+# -- Namespace definitions
+# Add/remove namespaces as needed. Each namespace can override defaults.
 namespaces:
   - name: demo-dev
     labels:
       environment: development
       team: platform
+    # Uses global defaults (no overrides)
+
+#-------------------------------
   - name: demo-staging
     labels:
       environment: staging
       team: platform
+    # Override quotas for staging
+    resourceQuota:
+      requests:
+        cpu: "4"
+        memory: 8Gi
+      limits:
+        cpu: "8"
+        memory: 16Gi
+      pods: "40"
+
+#-------------------------------
   - name: demo-prod
     labels:
       environment: production
       team: platform
-
-resourceQuota:
-  enabled: true
-  requests:
-    cpu: "2"
-    memory: 4Gi
-  limits:
-    cpu: "4"
-    memory: 8Gi
-  pods: "20"
-
-limitRange:
-  enabled: true
-  defaultRequest:
-    cpu: 100m
-    memory: 128Mi
-  defaultLimit:
-    cpu: 500m
-    memory: 512Mi
+    # Production gets more resources
+    resourceQuota:
+      requests:
+        cpu: "8"
+        memory: 16Gi
+      limits:
+        cpu: "16"
+        memory: 32Gi
+      pods: "100"
+    limitRange:
+      defaultRequest:
+        cpu: 200m
+        memory: 256Mi
+      defaultLimit:
+        cpu: "1"
+        memory: 1Gi

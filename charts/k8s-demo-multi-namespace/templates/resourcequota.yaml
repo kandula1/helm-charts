@@ -1,5 +1,7 @@
-{{- if .Values.resourceQuota.enabled }}
+{{- if $.Values.defaults.resourceQuota.enabled }}
 {{- range .Values.namespaces }}
+{{- $quota := $.Values.defaults.resourceQuota }}
+{{- $nsQuota := .resourceQuota | default dict }}
 ---
 apiVersion: v1
 kind: ResourceQuota
@@ -8,10 +10,10 @@ metadata:
   namespace: {{ .name }}
 spec:
   hard:
-    requests.cpu: {{ $.Values.resourceQuota.requests.cpu | quote }}
-    requests.memory: {{ $.Values.resourceQuota.requests.memory | quote }}
-    limits.cpu: {{ $.Values.resourceQuota.limits.cpu | quote }}
-    limits.memory: {{ $.Values.resourceQuota.limits.memory | quote }}
-    pods: {{ $.Values.resourceQuota.pods | quote }}
+    requests.cpu: {{ ($nsQuota.requests).cpu | default $quota.requests.cpu | quote }}
+    requests.memory: {{ ($nsQuota.requests).memory | default $quota.requests.memory | quote }}
+    limits.cpu: {{ ($nsQuota.limits).cpu | default $quota.limits.cpu | quote }}
+    limits.memory: {{ ($nsQuota.limits).memory | default $quota.limits.memory | quote }}
+    pods: {{ $nsQuota.pods | default $quota.pods | quote }}
 {{- end }}
 {{- end }}
