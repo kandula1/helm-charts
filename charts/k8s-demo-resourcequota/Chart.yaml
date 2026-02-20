@@ -1,0 +1,4 @@
+apiVersion: v2
+name: k8s-demo-resourcequota
+description: Resource quota for a namespace
+version: 1.0.0

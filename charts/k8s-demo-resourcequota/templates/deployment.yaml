@@ -1,0 +1,31 @@
+{{- if .Values.demoPod.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Namespace }}-demo-app
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: demo-app
+spec:
+  replicas: {{ .Values.demoPod.replicas }}
+  selector:
+    matchLabels:
+      app: demo-app
+  template:
+    metadata:
+      labels:
+        app: demo-app
+    spec:
+      containers:
+        - name: demo
+          image: {{ .Values.demoPod.image }}
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: {{ .Values.demoPod.requestCpu }}
+              memory: {{ .Values.demoPod.requestMemory }}
+            limits:
+              cpu: {{ .Values.demoPod.limitCpu }}
+              memory: {{ .Values.demoPod.limitMemory }}
+{{- end }}

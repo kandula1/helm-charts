@@ -1,0 +1,28 @@
+apiVersion: deployments.plural.sh/v1alpha1
+kind: ServiceDeployment
+metadata:
+  name: k8s-demo-resourcequota
+spec:
+  namespace: serv-quot
+  cluster: k8calab2
+  git:
+    url: https://github.com/kandula1/helm-charts.git
+    ref: main
+    folder: charts/k8s-demo-resourcequota
+  helm:
+    values:
+      requests:
+        cpu: "4"
+        memory: 8Gi
+      limits:
+        cpu: "8"
+        memory: 16Gi
+      pods: "30"
+      demoPod:
+        enabled: true
+        replicas: 1
+        image: nginx:1.27-alpine
+        requestCpu: 50m
+        requestMemory: 64Mi
+        limitCpu: 200m
+        limitMemory: 256Mi
