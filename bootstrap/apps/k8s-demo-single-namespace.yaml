@@ -1,8 +1,3 @@
-# =============================================================================
-# Single Namespace - GlobalService
-# ALL configuration is here. To change quotas, edit this file.
-# Chart at charts/k8s-demo-single-namespace is just a generic template.
-# =============================================================================
 apiVersion: deployments.plural.sh/v1alpha1
 kind: GlobalService
 metadata:
@@ -12,10 +7,11 @@ spec:
   template:
     name: k8s-demo-single-namespace
     namespace: default
-    helm:
+    git:
       url: https://github.com/kandula1/helm-charts.git
-      chart: charts/k8s-demo-single-namespace
       ref: main
+      folder: charts/k8s-demo-single-namespace
+    helm:
       values:
         namespace:
           name: platform-system
