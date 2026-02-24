@@ -1,0 +1,18 @@
+apiVersion: deployments.plural.sh/v1alpha1
+kind: ServiceDeployment
+metadata:
+  name: k8s-demo-hpa
+spec:
+  namespace: demo-staging
+  cluster: k8calab2
+  git:
+    url: https://github.com/kandula1/helm-charts.git
+    ref: main
+    folder: charts/k8s-demo-hpa
+  helm:
+    values:
+      targetDeployment: demo-staging-demo-app
+      minReplicas: 2
+      maxReplicas: 10
+      cpuThreshold: 70
+      memoryThreshold: 80

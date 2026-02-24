@@ -1,0 +1,5 @@
+targetDeployment: ""
+minReplicas: 1
+maxReplicas: 5
+cpuThreshold: 80
+memoryThreshold: 80

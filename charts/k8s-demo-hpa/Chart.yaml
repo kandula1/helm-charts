@@ -1,0 +1,4 @@
+apiVersion: v2
+name: k8s-demo-hpa
+description: Horizontal Pod Autoscaler for auto-scaling deployments
+version: 1.0.0
