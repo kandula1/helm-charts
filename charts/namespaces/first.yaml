@@ -1,14 +1,14 @@
-apiversion: V1
+apiversion: v1
 kind: Namespace
 metadata:
   name: test-ns-1
 ---
-apiversion: V1
+apiversion: v1
 kind: Namespace
 metadata:
   name: test-ns-2
 ---
-apiversion: V1
+apiversion: v1
 kind: Namespace
 metadata:
   name: test-ns-3
