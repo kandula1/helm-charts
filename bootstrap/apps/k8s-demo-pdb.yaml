@@ -1,0 +1,16 @@
+# PodDisruptionBudget
+apiVersion: deployments.plural.sh/v1alpha1
+kind: ServiceDeployment
+metadata:
+  name: k8s-demo-pdb
+spec:
+  namespace: demo-prod
+  cluster: k8calab2
+  git:
+    url: https://github.com/kandula1/helm-charts.git
+    ref: main
+    folder: charts/k8s-demo-pdb
+  helm:
+    values:
+      targetApp: demo-app
+      minAvailable: 2

@@ -1,0 +1,4 @@
+apiVersion: v2
+name: k8s-demo-pdb
+description: Pod Disruption Budget to protect pods during maintenance
+version: 1.0.0

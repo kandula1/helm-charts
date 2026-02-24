@@ -1,0 +1,4 @@
+targetApp: ""
+# Use one of these (not both):
+minAvailable: 1
+# maxUnavailable: 1
