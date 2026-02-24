@@ -13,6 +13,6 @@ spec:
     values:
       targetDeployment: demo-staging-demo-app
       minReplicas: 2
-      maxReplicas: 10
-      cpuThreshold: 70
-      memoryThreshold: 80
+      maxReplicas: 6
+      cpuThreshold: 1
+      memoryThreshold: 1
