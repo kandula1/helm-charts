@@ -3,7 +3,7 @@ kind: ServiceDeployment
 metadata:
   name: k8s-demo-hpa
 spec:
-  namespace: test-ns-1
+  namespace: default
   cluster: k8calab2
   git:
     url: https://github.com/kandula1/helm-charts.git
