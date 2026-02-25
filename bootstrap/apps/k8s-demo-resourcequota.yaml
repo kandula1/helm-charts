@@ -20,6 +20,14 @@ spec:
               cpu: "4"
               memory: 8Gi
             pods: "20"
+          # - namespace: test-ns-1
+          #   requests:
+          #     cpu: "16"
+          #     memory: 32Gi
+          #   limits:
+          #     cpu: "32"
+          #     memory: 64Gi
+          #   pods: "100"
             demoPod:
               enabled: true
               replicas: 1
