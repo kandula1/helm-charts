@@ -3,7 +3,7 @@ kind: ServiceDeployment
 metadata:
   name: k8s-demo-hpa
 spec:
-  namespace: demo-staging
+  namespace: test-ns-1
   cluster: k8calab2
   git:
     url: https://github.com/kandula1/helm-charts.git
@@ -11,7 +11,7 @@ spec:
     folder: charts/k8s-demo-hpa
   helm:
     values:
-      targetDeployment: demo-staging-demo-app
+      targetDeployment: test-ns-1-demo-app
       minReplicas: 2
       maxReplicas: 5
       cpuThreshold: 1
