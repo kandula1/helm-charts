@@ -12,7 +12,7 @@ spec:
   helm:
     values:
       targetDeployment: demo-staging-demo-app
-      minReplicas: 2
-      maxReplicas: 5
+      minReplicas: 70
+      maxReplicas: 80
       cpuThreshold: 1
       memoryThreshold: 1
