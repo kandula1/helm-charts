@@ -11,3 +11,97 @@ spec:
     url: https://github.com/kandula1/helm-charts.git
     ref: main
     folder: charts/k8s-demo-multi-namespace
+  helm:
+    values:
+      defaults:
+        resourceQuota:
+          enabled: true
+          requests:
+            cpu: "2"
+            memory: 4Gi
+          limits:
+            cpu: "4"
+            memory: 8Gi
+          pods: "20"
+        limitRange:
+          enabled: true
+          defaultRequest:
+            cpu: 100m
+            memory: 128Mi
+          defaultLimit:
+            cpu: 500m
+            memory: 512Mi
+        demoPod:
+          enabled: true
+          replicas: 1
+          image: nginx:1.27-alpine
+          resources:
+            requestCpu: 50m
+            requestMemory: 64Mi
+            limitCpu: 200m
+            limitMemory: 256Mi
+      namespaces:
+        - name: demo-dev
+          labels:
+            environment: development
+            team: platform
+          demoPod:
+            enabled: true
+            replicas: 1
+            image: nginx:1.27-alpine
+            resources:
+              requestCpu: 50m
+              requestMemory: 64Mi
+              limitCpu: 200m
+              limitMemory: 256Mi
+
+        - name: demo-staging
+          labels:
+            environment: staging
+            team: platform
+          resourceQuota:
+            requests:
+              cpu: "4"
+              memory: 8Gi
+            limits:
+              cpu: "8"
+              memory: 16Gi
+            pods: "40"
+          demoPod:
+            enabled: true
+            replicas: 2
+            image: nginx:1.27-alpine
+            resources:
+              requestCpu: 100m
+              requestMemory: 128Mi
+              limitCpu: 500m
+              limitMemory: 512Mi
+
+        - name: demo-prod
+          labels:
+            environment: production
+            team: platform
+          resourceQuota:
+            requests:
+              cpu: "8"
+              memory: 16Gi
+            limits:
+              cpu: "16"
+              memory: 32Gi
+            pods: "100"
+          limitRange:
+            defaultRequest:
+              cpu: 200m
+              memory: 256Mi
+            defaultLimit:
+              cpu: "1"
+              memory: 1Gi
+          demoPod:
+            enabled: true
+            replicas: 3
+            image: nginx:1.27-alpine
+            resources:
+              requestCpu: 200m
+              requestMemory: 256Mi
+              limitCpu: "1"
+              limitMemory: 1Gi

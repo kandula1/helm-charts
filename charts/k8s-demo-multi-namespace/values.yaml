@@ -1,22 +1,16 @@
-# =============================================================================
-# Dynamic Namespace Configuration
-# Each namespace can have its own resource quotas, limit ranges, and demo pods.
-# If not specified per-namespace, the global defaults below are used.
-# =============================================================================
-
-# -- Global defaults (applied when a namespace doesn't specify its own)
+# Defaults - override via ServiceDeployment helm.values
 defaults:
   resourceQuota:
-    enabled: true
+    enabled: false
     requests:
+      cpu: "1"
+      memory: 2Gi
+    limits:
       cpu: "2"
       memory: 4Gi
-    limits:
-      cpu: "4"
-      memory: 8Gi
-    pods: "20"
+    pods: "10"
   limitRange:
-    enabled: true
+    enabled: false
     defaultRequest:
       cpu: 100m
       memory: 128Mi
@@ -24,7 +18,7 @@ defaults:
       cpu: 500m
       memory: 512Mi
   demoPod:
-    enabled: true
+    enabled: false
     replicas: 1
     image: nginx:1.27-alpine
     resources:
@@ -33,73 +27,4 @@ defaults:
       limitCpu: 200m
       limitMemory: 256Mi
 
-# -- Namespace definitions
-namespaces:
-# ------- Dev --------
-  - name: demo-dev
-    labels:
-      environment: development
-      team: platform
-    demoPod:
-      enabled: true
-      replicas: 1
-      image: nginx:1.27-alpine
-      resources:
-        requestCpu: 50m
-        requestMemory: 64Mi
-        limitCpu: 200m
-        limitMemory: 256Mi
-
-# ------- Staging --------
-  - name: demo-staging
-    labels:
-      environment: staging
-      team: platform
-    resourceQuota:
-      requests:
-        cpu: "4"
-        memory: 8Gi
-      limits:
-        cpu: "8"
-        memory: 16Gi
-      pods: "40"
-    demoPod:
-      enabled: true
-      replicas: 2
-      image: nginx:1.27-alpine
-      resources:
-        requestCpu: 100m
-        requestMemory: 128Mi
-        limitCpu: 500m
-        limitMemory: 512Mi
-
-
-# ------- Prod --------
-  - name: demo-prod
-    labels:
-      environment: production
-      team: platform
-    resourceQuota:
-      requests:
-        cpu: "8"
-        memory: 16Gi
-      limits:
-        cpu: "16"
-        memory: 32Gi
-      pods: "100"
-    limitRange:
-      defaultRequest:
-        cpu: 200m
-        memory: 256Mi
-      defaultLimit:
-        cpu: "1"
-        memory: 1Gi
-    demoPod:
-      enabled: true
-      replicas: 3
-      image: nginx:1.27-alpine
-      resources:
-        requestCpu: 200m
-        requestMemory: 256Mi
-        limitCpu: "1"
-        limitMemory: 1Gi
+namespaces: []
