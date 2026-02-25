@@ -3,26 +3,56 @@ kind: ServiceDeployment
 metadata:
   name: k8s-demo-resourcequota
 spec:
-  namespace: serv-quot
+  namespace: default
   cluster: k8calab2
   git:
     url: https://github.com/kandula1/helm-charts.git
     ref: main
     folder: charts/k8s-demo-resourcequota
-  helm:
+helm:
     values:
-      requests:
-        cpu: "4"
-        memory: 8Gi
-      limits:
-        cpu: "8"
-        memory: 16Gi
-      pods: "30"
-      demoPod:
-        enabled: true
-        replicas: 1
-        image: nginx:1.27-alpine
-        requestCpu: 50m
-        requestMemory: 64Mi
-        limitCpu: 200m
-        limitMemory: 256Mi
+      quotas:
+        - namespace: test-ns-1
+          requests:
+            cpu: "2"
+            memory: 4Gi
+          limits:
+            cpu: "4"
+            memory: 8Gi
+          pods: "20"
+          demoPod:
+            enabled: true
+            replicas: 1
+            image: nginx:1.27-alpine
+            requestCpu: 50m
+            requestMemory: 64Mi
+            limitCpu: 200m
+            limitMemory: 256Mi
+
+        - namespace: test-ns-2
+          requests:
+            cpu: "4"
+            memory: 8Gi
+          limits:
+            cpu: "8"
+            memory: 16Gi
+          pods: "40"
+          # No demoPod — just quota, no pod
+
+        - namespace: test-ns-3
+          requests:
+            cpu: "8"
+            memory: 16Gi
+          limits:
+            cpu: "16"
+            memory: 32Gi
+          pods: "100"
+          demoPod:
+            enabled: true
+            replicas: 2
+            image: nginx:1.27-alpine
+            requestCpu: 100m
+            requestMemory: 128Mi
+            limitCpu: 500m
+            limitMemory: 512Mi
+

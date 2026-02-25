@@ -1,13 +1,15 @@
-{{- if .Values.demoPod.enabled }}
+{{- range .Values.quotas }}
+{{- if (.demoPod).enabled }}
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Namespace }}-demo-app
-  namespace: {{ .Release.Namespace }}
+  name: {{ .namespace }}-demo-app
+  namespace: {{ .namespace }}
   labels:
     app: demo-app
 spec:
-  replicas: {{ .Values.demoPod.replicas }}
+  replicas: {{ .demoPod.replicas }}
   selector:
     matchLabels:
       app: demo-app
@@ -18,14 +20,15 @@ spec:
     spec:
       containers:
         - name: demo
-          image: {{ .Values.demoPod.image }}
+          image: {{ .demoPod.image }}
           ports:
             - containerPort: 80
           resources:
             requests:
-              cpu: {{ .Values.demoPod.requestCpu }}
-              memory: {{ .Values.demoPod.requestMemory }}
+              cpu: {{ .demoPod.requestCpu }}
+              memory: {{ .demoPod.requestMemory }}
             limits:
-              cpu: {{ .Values.demoPod.limitCpu }}
-              memory: {{ .Values.demoPod.limitMemory }}
+              cpu: {{ .demoPod.limitCpu }}
+              memory: {{ .demoPod.limitMemory }}
+{{- end }}
 {{- end }}
