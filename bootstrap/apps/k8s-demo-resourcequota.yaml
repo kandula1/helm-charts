@@ -33,7 +33,7 @@ spec:
               replicas: 1
               image: nginx:1.27-alpine
               requestCpu: 50m
-              requestMemory: 300Mi
+              requestMemory: 64Mi
               limitCpu: 200m
               limitMemory: 256Mi
 
