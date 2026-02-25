@@ -16,4 +16,3 @@ spec:
       maxReplicas: 5
       cpuThreshold: 1
       memoryThreshold: 1
-      
