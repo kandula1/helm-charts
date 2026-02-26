@@ -1,0 +1,26 @@
+apiVersion: deployments.plural.sh/v1alpha1
+kind: ServiceDeployment
+metadata:
+  name: k8s-demo-networkpolicy
+spec:
+  namespace: demo-prod
+  cluster: k8calab2
+  git:
+    url: https://github.com/kandula1/helm-charts.git
+    ref: main
+    folder: charts/k8s-demo-networkpolicy
+  helm:
+    values:
+      targetApp: demo-app
+      ingressRules:
+        - fromNamespace: demo-staging
+          port: 80
+        - fromNamespace: default
+          port: 80
+      egressRules:
+        - toPort: 53
+          protocol: UDP
+          toCIDR: 10.0.0.0/8
+        - toPort: 80
+          protocol: TCP
+          toCIDR: 0.0.0.0/0

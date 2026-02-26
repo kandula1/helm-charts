@@ -1,0 +1,4 @@
+apiVersion: v2
+name: k8s-demo-networkpolicy
+description: Network policies to control pod-to-pod traffic
+version: 1.0.0

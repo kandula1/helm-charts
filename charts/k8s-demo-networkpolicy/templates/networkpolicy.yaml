@@ -1,0 +1,41 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ .Values.targetApp }}-netpol
+  namespace: {{ .Release.Namespace }}
+spec:
+  podSelector:
+    matchLabels:
+      app: {{ .Values.targetApp }}
+  policyTypes:
+    {{- if .Values.ingressRules }}
+    - Ingress
+    {{- end }}
+    {{- if .Values.egressRules }}
+    - Egress
+    {{- end }}
+  {{- if .Values.ingressRules }}
+  ingress:
+    {{- range .Values.ingressRules }}
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: {{ .fromNamespace }}
+      ports:
+        - port: {{ .port }}
+          protocol: {{ .protocol | default "TCP" }}
+    {{- end }}
+  {{- end }}
+  {{- if .Values.egressRules }}
+  egress:
+    {{- range .Values.egressRules }}
+    - {{- if .toCIDR }}
+      to:
+        - ipBlock:
+            cidr: {{ .toCIDR }}
+      {{- end }}
+      ports:
+        - port: {{ .toPort }}
+          protocol: {{ .protocol | default "TCP" }}
+    {{- end }}
+  {{- end }}

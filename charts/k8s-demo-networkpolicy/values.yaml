@@ -1,0 +1,14 @@
+targetApp: ""
+ingressRules: []
+# Example:
+# ingressRules:
+#   - fromNamespace: monitoring
+#     port: 8080
+#   - fromNamespace: ingress-nginx
+#     port: 80
+egressRules: []
+# Example:
+# egressRules:
+#   - toPort: 53
+#     protocol: UDP
+#   - toCIDR: 10.0.0.0/8
