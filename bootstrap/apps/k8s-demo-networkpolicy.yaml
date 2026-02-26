@@ -17,6 +17,10 @@ spec:
           port: 80
         - fromNamespace: default
           port: 80
+          # Pods in demo-staging can reach demo-prod pods on port 80 ✅
+          # Pods in default namespace can reach demo-prod pods on port 80 ✅
+          # Pods in test-ns-1, test-ns-2, test-ns-3, or any other namespace → BLOCKED ❌
+        
       egressRules:
         - toPort: 53
           protocol: UDP
@@ -24,3 +28,6 @@ spec:
         - toPort: 80
           protocol: TCP
           toCIDR: 0.0.0.0/0
+          # Demo-prod pods can do DNS lookups (port 53 UDP) within the internal network ✅
+          # Demo-prod pods can reach any HTTP endpoint OR external IP (port 80 TCP) anywhere ✅
+          # Demo-prod pods trying to reach port 443, 8080, or anything else → BLOCKED ❌
