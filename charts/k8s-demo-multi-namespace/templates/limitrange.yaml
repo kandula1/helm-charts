@@ -1,0 +1,21 @@
+{{- if $.Values.defaults.limitRange.enabled }}
+{{- range .Values.namespaces }}
+{{- $lr := $.Values.defaults.limitRange }}
+{{- $nsLR := .limitRange | default dict }}
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: {{ .name }}-limits
+  namespace: {{ .name }}
+spec:
+  limits:
+    - default:
+        cpu: {{ ($nsLR.defaultLimit).cpu | default $lr.defaultLimit.cpu }}
+        memory: {{ ($nsLR.defaultLimit).memory | default $lr.defaultLimit.memory }}
+      defaultRequest:
+        cpu: {{ ($nsLR.defaultRequest).cpu | default $lr.defaultRequest.cpu }}
+        memory: {{ ($nsLR.defaultRequest).memory | default $lr.defaultRequest.memory }}
+      type: Container
+{{- end }}
+{{- end }}
