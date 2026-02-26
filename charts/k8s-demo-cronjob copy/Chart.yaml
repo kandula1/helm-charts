@@ -1,4 +1,0 @@
-apiVersion: v2
-name: k8s-demo-cronjob
-description: Scheduled Kubernetes CronJob
-version: 1.0.0
