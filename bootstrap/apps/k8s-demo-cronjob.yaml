@@ -1,0 +1,25 @@
+apiVersion: deployments.plural.sh/v1alpha1
+kind: ServiceDeployment
+metadata:
+  name: k8s-demo-cronjob
+spec:
+  namespace: demo-staging
+  cluster: k8calab2
+  git:
+    url: https://github.com/kandula1/helm-charts.git
+    ref: main
+    folder: charts/k8s-demo-cronjob
+  helm:
+    values:
+      jobName: log-cleanup
+      schedule: "*/5 * * * *"
+      image: busybox:latest
+      command:
+        - /bin/sh
+        - -c
+        - "echo 'Running cleanup at' $(date); echo 'Cleaning up old logs...'; echo 'Done.'"
+      restartPolicy: OnFailure
+      requestCpu: 50m
+      requestMemory: 64Mi
+      limitCpu: 200m
+      limitMemory: 256Mi
