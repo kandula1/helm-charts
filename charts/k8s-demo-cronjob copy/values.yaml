@@ -1,0 +1,9 @@
+jobName: ""
+schedule: "0 0 * * *"
+image: busybox:latest
+command: ["echo", "hello"]
+restartPolicy: OnFailure
+requestCpu: 50m
+requestMemory: 64Mi
+limitCpu: 200m
+limitMemory: 256Mi
