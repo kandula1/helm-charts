@@ -1,4 +1,4 @@
 apiVersion: v2
 name: k8s-demo-secret
-description: Demo - Kubernetes Secrets (Opaque and TLS types) mounted as env vars and volumes
+description: Kubernetes Secrets for managing sensitive data
 version: 1.0.0

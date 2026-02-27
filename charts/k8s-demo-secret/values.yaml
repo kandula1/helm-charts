@@ -1,16 +1,8 @@
-# NOTE: In production, use sealed-secrets or external-secrets-operator
-# These are demo values only
-dbCredentials:
-  username: demo-admin
-  password: P@ssw0rd123!
-  host: db.demo.local
-  port: "5432"
-  database: demo_app
-
-apiKeys:
-  stripe: sk_test_demo_key_12345
-  sendgrid: SG.demo_key_67890
-
-image:
-  repository: busybox
-  tag: "1.36"
+secrets: []
+# Example:
+# secrets:
+#   - name: my-secret
+#     type: Opaque
+#     data:
+#       username: admin
+#       password: changeme
