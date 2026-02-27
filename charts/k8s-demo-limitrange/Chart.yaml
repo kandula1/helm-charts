@@ -1,0 +1,4 @@
+apiVersion: v2
+name: k8s-demo-limitrange
+description: Default resource limits for containers in a namespace
+version: 1.0.0

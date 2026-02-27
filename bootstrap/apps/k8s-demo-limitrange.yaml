@@ -1,0 +1,20 @@
+# bootstrap/apps/k8s-demo-limitrange.yaml
+apiVersion: deployments.plural.sh/v1alpha1
+kind: ServiceDeployment
+metadata:
+  name: k8s-demo-limitrange
+spec:
+  namespace: demo-prod
+  cluster: k8calab2
+  git:
+    url: https://github.com/kandula1/helm-charts.git
+    ref: main
+    folder: charts/k8s-demo-limitrange
+  helm:
+    values:
+      defaultRequestCpu: 200m
+      defaultRequestMemory: 256Mi
+      defaultLimitCpu: "1"
+      defaultLimitMemory: 1Gi
+      maxCpu: "8"
+      maxMemory: 16Gi

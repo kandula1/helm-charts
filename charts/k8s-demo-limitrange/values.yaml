@@ -1,0 +1,6 @@
+defaultRequestCpu: 100m
+defaultRequestMemory: 128Mi
+defaultLimitCpu: 500m
+defaultLimitMemory: 512Mi
+maxCpu: "4"
+maxMemory: 8Gi
