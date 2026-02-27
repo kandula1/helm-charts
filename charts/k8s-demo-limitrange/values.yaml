@@ -5,6 +5,4 @@ defaultLimitMemory: ""
 maxCpu: ""
 maxMemory: ""
 
-testPod:
-  enabled: false
-  image: ""
+testPods: []

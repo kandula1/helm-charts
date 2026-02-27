@@ -1,27 +1,26 @@
-{{- if .Values.testPod }}
-{{- if .Values.testPod.enabled }}
+{{- range .Values.testPods }}
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: limitrange-test-no-limits
-  namespace: {{ .Release.Namespace }}
+  name: {{ .name }}
+  namespace: {{ $.Release.Namespace }}
   labels:
-    app: limitrange-test
+    app: {{ .name }}
 spec:
-  replicas: 1
+  replicas: {{ .replicas | default 1 }}
   selector:
     matchLabels:
-      app: limitrange-test
+      app: {{ .name }}
   template:
     metadata:
       labels:
-        app: limitrange-test
+        app: {{ .name }}
     spec:
       containers:
-        - name: test
-          image: {{ .Values.testPod.image | default "nginx:1.27-alpine" }}
+        - name: {{ .name }}
+          image: {{ .image | default "nginx:1.27-alpine" }}
           ports:
             - containerPort: 80
           # NO resource limits set — LimitRange will auto-assign them
-{{- end }}
 {{- end }}
