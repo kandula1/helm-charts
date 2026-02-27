@@ -21,8 +21,8 @@ spec:
         - name: test-nginx
           image: nginx:1.27-alpine
           replicas: 1
-        - name: test-busybox
-          image: busybox:latest
+        - name: test-httpd
+          image: httpd:2.4-alpine
           replicas: 1
         - name: test-redis
           image: redis:7-alpine
