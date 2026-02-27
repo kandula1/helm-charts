@@ -24,6 +24,6 @@ spec:
         - name: test-busybox
           image: busybox:latest
           replicas: 1
-        - name: test-httpd
-          image: httpd:2.4-alpine
-          replicas: 2
+        - name: test-redis
+          image: redis:7-alpine
+          replicas: 1
