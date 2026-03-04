@@ -1,0 +1,59 @@
+apiVersion: deployments.plural.sh/v1alpha1
+kind: ServiceDeployment
+metadata:
+  name: k8s-demo-ingress
+  namespace: infra
+spec:
+  namespace: demo-prod
+  cluster:
+    handle: k8calab2
+  repositoryRef:
+    kind: GitRepository
+    name: helm-charts
+    namespace: infra
+  git:
+    ref: main
+    folder: charts/k8s-demo-ingress
+  helm:
+    values:
+      ingresses:
+        # 1. Path-based routing — multiple apps under one hostname
+        - name: demo-apps-ingress
+          ingressClassName: nginx
+          annotations:
+            nginx.ingress.kubernetes.io/rewrite-target: /
+            nginx.ingress.kubernetes.io/ssl-redirect: "false"
+          rules:
+            - http:
+                paths:
+                  - path: /app-one
+                    pathType: Prefix
+                    serviceName: demo-app-one
+                    servicePort: 80
+                  - path: /app-two
+                    pathType: Prefix
+                    serviceName: demo-app-two
+                    servicePort: 80
+          testBackend:
+            enabled: true
+
+        # 2. Host-based routing — different hostnames to different services
+        - name: demo-host-ingress
+          ingressClassName: nginx
+          annotations:
+            nginx.ingress.kubernetes.io/ssl-redirect: "false"
+          rules:
+            - host: api.demo.local
+              paths:
+                - path: /
+                  pathType: Prefix
+                  serviceName: demo-api-backend
+                  servicePort: 8080
+            - host: web.demo.local
+              paths:
+                - path: /
+                  pathType: Prefix
+                  serviceName: demo-web-frontend
+                  servicePort: 80
+          testBackend:
+            enabled: true

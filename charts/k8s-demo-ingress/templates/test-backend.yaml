@@ -1,0 +1,87 @@
+{{- range .Values.ingresses }}
+{{- if .testBackend }}
+{{- if .testBackend.enabled }}
+{{- range .rules }}
+{{- range .paths }}
+---
+# Test backend: {{ .serviceName }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .serviceName }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app: {{ .serviceName }}
+    app.kubernetes.io/managed-by: plural
+    app.kubernetes.io/part-of: k8s-demo-ingress
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .serviceName }}
+  template:
+    metadata:
+      labels:
+        app: {{ .serviceName }}
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:1.27-alpine
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 100m
+              memory: 128Mi
+          volumeMounts:
+            - name: html
+              mountPath: /usr/share/nginx/html
+      initContainers:
+        - name: setup
+          image: busybox:1.36
+          command:
+            - /bin/sh
+            - -c
+            - |
+              cat > /html/index.html << 'HTMLEOF'
+              <!DOCTYPE html>
+              <html>
+              <head><title>{{ .serviceName }}</title></head>
+              <body>
+                <h1>{{ .serviceName }}</h1>
+                <p>Path: {{ .path }}</p>
+                <p>Port: {{ .servicePort }}</p>
+                <p>Served via NGINX Ingress Controller</p>
+              </body>
+              </html>
+              HTMLEOF
+          volumeMounts:
+            - name: html
+              mountPath: /html
+      volumes:
+        - name: html
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .serviceName }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app: {{ .serviceName }}
+    app.kubernetes.io/managed-by: plural
+spec:
+  ports:
+    - port: {{ .servicePort }}
+      targetPort: 80
+      protocol: TCP
+  selector:
+    app: {{ .serviceName }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}

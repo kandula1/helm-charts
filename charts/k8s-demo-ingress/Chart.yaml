@@ -1,0 +1,4 @@
+apiVersion: v2
+name: k8s-demo-ingress
+description: Ingress rules for exposing services externally via NGINX Ingress Controller
+version: 1.0.0
