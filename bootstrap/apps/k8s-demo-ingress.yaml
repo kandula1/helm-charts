@@ -5,8 +5,7 @@ metadata:
   namespace: infra
 spec:
   namespace: demo-prod
-  cluster:
-    handle: k8calab2
+  cluster: k8calab2
   repositoryRef:
     kind: GitRepository
     name: helm-charts
