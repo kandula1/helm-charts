@@ -1,0 +1,56 @@
+{{- range .Values.serviceAccounts }}
+{{- if .testJob }}
+{{- if .testJob.enabled }}
+---
+# Test Job: proves {{ .name }} can use its permissions
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .name }}-permission-test
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app.kubernetes.io/managed-by: plural
+    app.kubernetes.io/part-of: k8s-demo-rbac
+spec:
+  backoffLimit: 1
+  ttlSecondsAfterFinished: 300
+  template:
+    metadata:
+      labels:
+        app: {{ .name }}-test
+    spec:
+      serviceAccountName: {{ .name }}
+      restartPolicy: Never
+      containers:
+        - name: test
+          image: {{ .testJob.image | default "bitnami/kubectl" }}:{{ .testJob.tag | default "1.28" }}
+          command:
+            - /bin/sh
+            - -c
+            - |
+              echo "=== Testing permissions for ServiceAccount: {{ .name }} ==="
+              echo ""
+              {{- if .rules }}
+              echo "--- Namespace-scoped permissions ---"
+              {{- range .rules }}
+              {{- range .resources }}
+              echo "Testing: {{ . }}"
+              kubectl get {{ . }} -n {{ $.Release.Namespace }} --no-headers 2>&1 | head -5
+              echo ""
+              {{- end }}
+              {{- end }}
+              {{- end }}
+              {{- if .clusterRules }}
+              echo "--- Cluster-scoped permissions ---"
+              {{- range .clusterRules }}
+              {{- range .resources }}
+              echo "Testing: {{ . }}"
+              kubectl get {{ . }} --no-headers 2>&1 | head -5
+              echo ""
+              {{- end }}
+              {{- end }}
+              {{- end }}
+              echo "=== Permission test complete ==="
+{{- end }}
+{{- end }}
+{{- end }}

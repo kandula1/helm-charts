@@ -1,0 +1,4 @@
+apiVersion: v2
+name: k8s-demo-rbac
+description: ServiceAccount with Role, RoleBinding, ClusterRole, and ClusterRoleBinding for CI/CD and operational access control
+version: 1.0.0

@@ -1,0 +1,56 @@
+apiVersion: deployments.plural.sh/v1alpha1
+kind: ServiceDeployment
+metadata:
+  name: k8s-demo-rbac
+  namespace: infra
+spec:
+  namespace: demo-prod
+  cluster:
+    handle: k8calab2
+  repositoryRef:
+    kind: GitRepository
+    name: helm-charts
+    namespace: infra
+  git:
+    ref: main
+    folder: charts/k8s-demo-rbac
+  helm:
+    values:
+      serviceAccounts:
+        # 1. CI/CD Deployer - can manage deployments and pods
+        - name: ci-deployer
+          rules:
+            - apiGroups: ["apps"]
+              resources: ["deployments", "replicasets"]
+              verbs: ["get", "list", "watch", "create", "update", "patch"]
+            - apiGroups: [""]
+              resources: ["pods", "pods/log", "services"]
+              verbs: ["get", "list", "watch"]
+            - apiGroups: [""]
+              resources: ["configmaps", "secrets"]
+              verbs: ["get", "list"]
+          testJob:
+            enabled: true
+            image: bitnami/kubectl
+            tag: "1.28"
+
+        # 2. Monitoring Reader - read-only across namespace + cluster nodes
+        - name: monitoring-reader
+          rules:
+            - apiGroups: [""]
+              resources: ["pods", "services", "endpoints", "configmaps"]
+              verbs: ["get", "list", "watch"]
+            - apiGroups: ["apps"]
+              resources: ["deployments", "statefulsets", "daemonsets"]
+              verbs: ["get", "list", "watch"]
+          clusterRules:
+            - apiGroups: [""]
+              resources: ["nodes", "namespaces"]
+              verbs: ["get", "list", "watch"]
+            - apiGroups: ["metrics.k8s.io"]
+              resources: ["nodes", "pods"]
+              verbs: ["get", "list"]
+          testJob:
+            enabled: true
+            image: bitnami/kubectl
+            tag: "1.28"
