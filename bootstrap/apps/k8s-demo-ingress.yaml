@@ -2,15 +2,11 @@ apiVersion: deployments.plural.sh/v1alpha1
 kind: ServiceDeployment
 metadata:
   name: k8s-demo-ingress
-  namespace: infra
 spec:
   namespace: demo-prod
   cluster: k8calab2
-  repositoryRef:
-    kind: GitRepository
-    name: helm-charts
-    namespace: infra
   git:
+    url: https://github.com/kandula1/helm-charts.git
     ref: main
     folder: charts/k8s-demo-ingress
   helm:
@@ -23,16 +19,15 @@ spec:
             nginx.ingress.kubernetes.io/rewrite-target: /
             nginx.ingress.kubernetes.io/ssl-redirect: "false"
           rules:
-            - http:
-                paths:
-                  - path: /app-one
-                    pathType: Prefix
-                    serviceName: demo-app-one
-                    servicePort: 80
-                  - path: /app-two
-                    pathType: Prefix
-                    serviceName: demo-app-two
-                    servicePort: 80
+            - paths:
+                - path: /app-one
+                  pathType: Prefix
+                  serviceName: demo-app-one
+                  servicePort: 80
+                - path: /app-two
+                  pathType: Prefix
+                  serviceName: demo-app-two
+                  servicePort: 80
           testBackend:
             enabled: true
 
