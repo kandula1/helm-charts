@@ -1,0 +1,4 @@
+apiVersion: v2
+name: k8s-demo-servicemonitor
+description: Prometheus ServiceMonitor for scraping application metrics endpoints
+version: 1.0.0

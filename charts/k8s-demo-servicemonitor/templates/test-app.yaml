@@ -1,0 +1,61 @@
+{{- range .Values.monitors }}
+{{- if .testApp }}
+{{- if .testApp.enabled }}
+---
+# Test app that exposes a /metrics endpoint
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .name }}-test-app
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app: {{ .name }}-test-app
+    {{- range $key, $val := .selectorLabels }}
+    {{ $key }}: {{ $val | quote }}
+    {{- end }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .name }}-test-app
+  template:
+    metadata:
+      labels:
+        app: {{ .name }}-test-app
+        {{- range $key, $val := .selectorLabels }}
+        {{ $key }}: {{ $val | quote }}
+        {{- end }}
+    spec:
+      containers:
+        - name: metrics-server
+          image: {{ .testApp.image | default "nginx" }}:{{ .testApp.tag | default "1.27-alpine" }}
+          ports:
+            - name: metrics
+              containerPort: {{ .testApp.port | default 80 }}
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 100m
+              memory: 128Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .name }}-test-app
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    {{- range $key, $val := .selectorLabels }}
+    {{ $key }}: {{ $val | quote }}
+    {{- end }}
+spec:
+  ports:
+    - name: metrics
+      port: {{ .testApp.port | default 80 }}
+      targetPort: {{ .testApp.port | default 80 }}
+  selector:
+    app: {{ .name }}-test-app
+{{- end }}
+{{- end }}
+{{- end }}

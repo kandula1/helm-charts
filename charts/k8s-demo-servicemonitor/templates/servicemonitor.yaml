@@ -1,0 +1,46 @@
+{{- range .Values.monitors }}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ .name }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app.kubernetes.io/managed-by: plural
+    app.kubernetes.io/part-of: k8s-demo-servicemonitor
+    {{- if .labels }}
+    {{- range $key, $val := .labels }}
+    {{ $key }}: {{ $val | quote }}
+    {{- end }}
+    {{- end }}
+spec:
+  selector:
+    matchLabels:
+      {{- range $key, $val := .selectorLabels }}
+      {{ $key }}: {{ $val | quote }}
+      {{- end }}
+  {{- if .namespaceSelector }}
+  namespaceSelector:
+    {{- if .namespaceSelector.any }}
+    any: true
+    {{- else if .namespaceSelector.matchNames }}
+    matchNames:
+      {{- range .namespaceSelector.matchNames }}
+      - {{ . | quote }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+  endpoints:
+    {{- range .endpoints }}
+    - port: {{ .port | quote }}
+      {{- if .path }}
+      path: {{ .path }}
+      {{- end }}
+      {{- if .interval }}
+      interval: {{ .interval }}
+      {{- end }}
+      {{- if .scrapeTimeout }}
+      scrapeTimeout: {{ .scrapeTimeout }}
+      {{- end }}
+    {{- end }}
+{{- end }}
