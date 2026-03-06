@@ -1,0 +1,35 @@
+apiVersion: deployments.plural.sh/v1alpha1
+kind: ServiceDeployment
+metadata:
+  name: k8s-demo-securitycontext
+spec:
+  namespace: demo-prod
+  cluster: k8calab2
+  git:
+    url: https://github.com/kandula1/helm-charts.git
+    ref: main
+    folder: charts/k8s-demo-securitycontext
+  helm:
+    values:
+      apps:
+        - name: hardened-app
+          image: nginxinc/nginx-unprivileged
+          tag: "1.27-alpine"
+          ports:
+            - 8080
+          requestCpu: 50m
+          requestMemory: 64Mi
+          limitCpu: 200m
+          limitMemory: 256Mi
+          podSecurityContext:
+            runAsNonRoot: true
+            runAsUser: 101
+            runAsGroup: 101
+            fsGroup: 101
+          containerSecurityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          testJob:
+            enabled: true
