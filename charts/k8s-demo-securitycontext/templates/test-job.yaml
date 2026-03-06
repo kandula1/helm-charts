@@ -12,7 +12,7 @@ metadata:
     app.kubernetes.io/part-of: k8s-demo-securitycontext
 spec:
   backoffLimit: 1
-  ttlSecondsAfterFinished: 300
+  ttlSecondsAfterFinished: 86400 #keeps the Job around for 24 hours
   template:
     spec:
       restartPolicy: Never
