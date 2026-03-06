@@ -1,0 +1,4 @@
+apiVersion: v2
+name: k8s-demo-team-quota
+description: Multi-tenant resource quotas - enforce per-team resource limits with isolated namespaces
+version: 1.0.0

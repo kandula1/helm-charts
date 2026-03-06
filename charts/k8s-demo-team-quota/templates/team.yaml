@@ -1,0 +1,61 @@
+{{- range .Values.teams }}
+---
+# Namespace for team: {{ .name }}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .namespace }}
+  labels:
+    team: {{ .name }}
+    app.kubernetes.io/managed-by: plural
+    app.kubernetes.io/part-of: k8s-demo-team-quota
+---
+# ResourceQuota for team: {{ .name }}
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: {{ .name }}-quota
+  namespace: {{ .namespace }}
+  labels:
+    team: {{ .name }}
+spec:
+  hard:
+    requests.cpu: {{ .quota.requestsCpu | quote }}
+    requests.memory: {{ .quota.requestsMemory | quote }}
+    limits.cpu: {{ .quota.limitsCpu | quote }}
+    limits.memory: {{ .quota.limitsMemory | quote }}
+    pods: {{ .quota.maxPods | quote }}
+    {{- if .quota.maxServices }}
+    services: {{ .quota.maxServices | quote }}
+    {{- end }}
+    {{- if .quota.maxSecrets }}
+    secrets: {{ .quota.maxSecrets | quote }}
+    {{- end }}
+    {{- if .quota.maxConfigMaps }}
+    configmaps: {{ .quota.maxConfigMaps | quote }}
+    {{- end }}
+    {{- if .quota.maxPVCs }}
+    persistentvolumeclaims: {{ .quota.maxPVCs | quote }}
+    {{- end }}
+---
+# LimitRange for team: {{ .name }} — auto-assigns defaults
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: {{ .name }}-limits
+  namespace: {{ .namespace }}
+  labels:
+    team: {{ .name }}
+spec:
+  limits:
+    - type: Container
+      default:
+        cpu: {{ .limits.defaultCpu | default "500m" }}
+        memory: {{ .limits.defaultMemory | default "512Mi" }}
+      defaultRequest:
+        cpu: {{ .limits.defaultRequestCpu | default "100m" }}
+        memory: {{ .limits.defaultRequestMemory | default "128Mi" }}
+      max:
+        cpu: {{ .limits.maxCpu | default "2" }}
+        memory: {{ .limits.maxMemory | default "4Gi" }}
+{{- end }}

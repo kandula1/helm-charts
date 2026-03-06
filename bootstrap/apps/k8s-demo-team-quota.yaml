@@ -1,0 +1,87 @@
+apiVersion: deployments.plural.sh/v1alpha1
+kind: ServiceDeployment
+metadata:
+  name: k8s-demo-team-quota
+spec:
+  namespace: demo-prod
+  cluster: k8calab2
+  git:
+    url: https://github.com/kandula1/helm-charts.git
+    ref: main
+    folder: charts/k8s-demo-team-quota
+  helm:
+    values:
+      teams:
+        - name: team-frontend
+          namespace: team-frontend
+          quota:
+            requestsCpu: "2"
+            requestsMemory: 4Gi
+            limitsCpu: "4"
+            limitsMemory: 8Gi
+            maxPods: "20"
+            maxServices: "10"
+            maxSecrets: "10"
+            maxConfigMaps: "10"
+          limits:
+            defaultCpu: 250m
+            defaultMemory: 256Mi
+            defaultRequestCpu: 100m
+            defaultRequestMemory: 128Mi
+            maxCpu: "1"
+            maxMemory: 2Gi
+          testPod:
+            enabled: true
+            requestCpu: 100m
+            requestMemory: 128Mi
+            limitCpu: 200m
+            limitMemory: 256Mi
+
+        - name: team-backend
+          namespace: team-backend
+          quota:
+            requestsCpu: "4"
+            requestsMemory: 8Gi
+            limitsCpu: "8"
+            limitsMemory: 16Gi
+            maxPods: "30"
+            maxServices: "15"
+            maxSecrets: "20"
+            maxConfigMaps: "15"
+            maxPVCs: "5"
+          limits:
+            defaultCpu: 500m
+            defaultMemory: 512Mi
+            defaultRequestCpu: 200m
+            defaultRequestMemory: 256Mi
+            maxCpu: "2"
+            maxMemory: 4Gi
+          testPod:
+            enabled: true
+            requestCpu: 200m
+            requestMemory: 256Mi
+            limitCpu: 400m
+            limitMemory: 512Mi
+
+        - name: team-data
+          namespace: team-data
+          quota:
+            requestsCpu: "8"
+            requestsMemory: 16Gi
+            limitsCpu: "16"
+            limitsMemory: 32Gi
+            maxPods: "15"
+            maxPVCs: "10"
+          limits:
+            defaultCpu: "1"
+            defaultMemory: 1Gi
+            defaultRequestCpu: 500m
+            defaultRequestMemory: 512Mi
+            maxCpu: "4"
+            maxMemory: 8Gi
+          testPod:
+            enabled: true
+            requestCpu: 500m
+            requestMemory: 512Mi
+            limitCpu: "1"
+            limitMemory: 1Gi

@@ -1,0 +1,38 @@
+{{- range .Values.teams }}
+{{- if .testPod }}
+{{- if .testPod.enabled }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .name }}-test-app
+  namespace: {{ .namespace }}
+  labels:
+    app: {{ .name }}-test-app
+    team: {{ .name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .name }}-test-app
+  template:
+    metadata:
+      labels:
+        app: {{ .name }}-test-app
+        team: {{ .name }}
+    spec:
+      containers:
+        - name: demo
+          image: nginx:1.27-alpine
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: {{ .testPod.requestCpu | default "100m" }}
+              memory: {{ .testPod.requestMemory | default "128Mi" }}
+            limits:
+              cpu: {{ .testPod.limitCpu | default "200m" }}
+              memory: {{ .testPod.limitMemory | default "256Mi" }}
+{{- end }}
+{{- end }}
+{{- end }}
