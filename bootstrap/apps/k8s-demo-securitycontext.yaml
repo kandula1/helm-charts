@@ -27,7 +27,6 @@ spec:
             runAsGroup: 101
             fsGroup: 101
           containerSecurityContext:
-            readOnlyRootFilesystem: true
             allowPrivilegeEscalation: false
             capabilities:
               drop:
