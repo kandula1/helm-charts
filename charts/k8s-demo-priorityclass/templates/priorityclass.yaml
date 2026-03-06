@@ -1,0 +1,14 @@
+{{- range .Values.priorityClasses }}
+---
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: {{ .name }}
+  labels:
+    app.kubernetes.io/managed-by: plural
+    app.kubernetes.io/part-of: k8s-demo-priorityclass
+value: {{ .value }}
+globalDefault: {{ .globalDefault | default false }}
+preemptionPolicy: {{ .preemptionPolicy | default "PreemptLowerPriority" }}
+description: {{ .description | quote }}
+{{- end }}

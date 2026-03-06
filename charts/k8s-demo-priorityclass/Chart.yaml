@@ -1,0 +1,4 @@
+apiVersion: v2
+name: k8s-demo-priorityclass
+description: PriorityClass for pod scheduling priority - ensures critical pods get resources first
+version: 1.0.0

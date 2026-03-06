@@ -1,0 +1,44 @@
+{{- range .Values.priorityClasses }}
+{{- if .testPod }}
+{{- if .testPod.enabled }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .name }}-test
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app: {{ .name }}-test
+    app.kubernetes.io/managed-by: plural
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .name }}-test
+  template:
+    metadata:
+      labels:
+        app: {{ .name }}-test
+        priority: {{ .name }}
+    spec:
+      priorityClassName: {{ .name }}
+      containers:
+        - name: demo
+          image: nginx:1.27-alpine
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 100m
+              memory: 128Mi
+          env:
+            - name: PRIORITY_CLASS
+              value: {{ .name }}
+            - name: PRIORITY_VALUE
+              value: {{ .value | quote }}
+{{- end }}
+{{- end }}
+{{- end }}
