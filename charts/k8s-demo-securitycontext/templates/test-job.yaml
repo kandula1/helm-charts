@@ -1,0 +1,65 @@
+{{- range .Values.apps }}
+{{- if .testJob }}
+{{- if .testJob.enabled }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .name }}-security-test
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app.kubernetes.io/managed-by: plural
+    app.kubernetes.io/part-of: k8s-demo-securitycontext
+spec:
+  backoffLimit: 1
+  ttlSecondsAfterFinished: 300
+  template:
+    spec:
+      restartPolicy: Never
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+      containers:
+        - name: test
+          image: busybox:1.36
+          securityContext:
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          command:
+            - /bin/sh
+            - -c
+            - |
+              echo "===== Security Context Demo ====="
+              echo ""
+              echo "--- Who am I? ---"
+              echo "User ID: $(id -u)"
+              echo "Group ID: $(id -g)"
+              echo "Username: $(whoami 2>/dev/null || echo 'no name mapped')"
+              echo ""
+              echo "--- Can I write to root filesystem? ---"
+              touch /test-file 2>&1 || echo "BLOCKED: Read-only filesystem"
+              echo ""
+              echo "--- Can I write to /tmp? ---"
+              touch /tmp/test-file && echo "ALLOWED: /tmp is writable (emptyDir)" || echo "BLOCKED"
+              echo ""
+              echo "--- Am I root? ---"
+              if [ "$(id -u)" -eq 0 ]; then
+                echo "YES - running as root (BAD)"
+              else
+                echo "NO - running as user $(id -u) (GOOD)"
+              fi
+              echo ""
+              echo "===== Security Context Demo Complete ====="
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir: {}
+{{- end }}
+{{- end }}
+{{- end }}

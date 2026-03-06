@@ -1,0 +1,4 @@
+apiVersion: v2
+name: k8s-demo-securitycontext
+description: Pod and container security restrictions - non-root, read-only filesystem, dropped capabilities
+version: 1.0.0

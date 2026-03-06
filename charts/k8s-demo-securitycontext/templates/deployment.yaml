@@ -1,0 +1,97 @@
+{{- range .Values.apps }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .name }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app: {{ .name }}
+    app.kubernetes.io/managed-by: plural
+    app.kubernetes.io/part-of: k8s-demo-securitycontext
+spec:
+  replicas: {{ .replicas | default 1 }}
+  selector:
+    matchLabels:
+      app: {{ .name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .name }}
+    spec:
+      {{- if .podSecurityContext }}
+      securityContext:
+        {{- if .podSecurityContext.runAsNonRoot }}
+        runAsNonRoot: {{ .podSecurityContext.runAsNonRoot }}
+        {{- end }}
+        {{- if .podSecurityContext.runAsUser }}
+        runAsUser: {{ .podSecurityContext.runAsUser }}
+        {{- end }}
+        {{- if .podSecurityContext.runAsGroup }}
+        runAsGroup: {{ .podSecurityContext.runAsGroup }}
+        {{- end }}
+        {{- if .podSecurityContext.fsGroup }}
+        fsGroup: {{ .podSecurityContext.fsGroup }}
+        {{- end }}
+      {{- end }}
+      containers:
+        - name: {{ .name }}
+          image: {{ .image | default "nginx" }}:{{ .tag | default "1.27-alpine" }}
+          ports:
+            {{- range .ports }}
+            - containerPort: {{ . }}
+            {{- end }}
+          resources:
+            requests:
+              cpu: {{ .requestCpu | default "50m" }}
+              memory: {{ .requestMemory | default "64Mi" }}
+            limits:
+              cpu: {{ .limitCpu | default "200m" }}
+              memory: {{ .limitMemory | default "256Mi" }}
+          {{- if .containerSecurityContext }}
+          securityContext:
+            {{- if .containerSecurityContext.readOnlyRootFilesystem }}
+            readOnlyRootFilesystem: {{ .containerSecurityContext.readOnlyRootFilesystem }}
+            {{- end }}
+            {{- if .containerSecurityContext.allowPrivilegeEscalation }}
+            allowPrivilegeEscalation: {{ .containerSecurityContext.allowPrivilegeEscalation }}
+            {{- end }}
+            {{- if .containerSecurityContext.capabilities }}
+            capabilities:
+              {{- if .containerSecurityContext.capabilities.drop }}
+              drop:
+                {{- range .containerSecurityContext.capabilities.drop }}
+                - {{ . }}
+                {{- end }}
+              {{- end }}
+              {{- if .containerSecurityContext.capabilities.add }}
+              add:
+                {{- range .containerSecurityContext.capabilities.add }}
+                - {{ . }}
+                {{- end }}
+              {{- end }}
+            {{- end }}
+          {{- end }}
+          {{- if .containerSecurityContext }}
+          {{- if .containerSecurityContext.readOnlyRootFilesystem }}
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+            - name: cache
+              mountPath: /var/cache/nginx
+            - name: run
+              mountPath: /var/run
+          {{- end }}
+          {{- end }}
+      {{- if .containerSecurityContext }}
+      {{- if .containerSecurityContext.readOnlyRootFilesystem }}
+      volumes:
+        - name: tmp
+          emptyDir: {}
+        - name: cache
+          emptyDir: {}
+        - name: run
+          emptyDir: {}
+      {{- end }}
+      {{- end }}
+{{- end }}
